@@ -11,7 +11,7 @@ Available as a terminal app (`main.py`) or a desktop GUI (`gui.py`).
 ## Requirements
 
 - Python 3.9+
-- A Spotify account (Free works; Premium not required)
+- A Spotify account (Free does not work; Premium required)
 - A Spotify developer app
 - A Google Gemini API key
 
