@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-3.5-flash"
 SPOTIFY_SCOPE = "playlist-modify-private"
 
 REQUIRED_ENV = [

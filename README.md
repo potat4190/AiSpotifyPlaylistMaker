@@ -22,8 +22,8 @@ Available as a terminal app (`main.py`) or a desktop GUI (`gui.py`).
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/potat4190/AI_SpotifyPlaylistMaker.git
-cd AI_SpotifyPlaylistMaker
+git clone https://github.com/potat4190/AiSpotifyPlaylistMaker.git
+cd AiSpotifyPlaylistMaker
 
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
