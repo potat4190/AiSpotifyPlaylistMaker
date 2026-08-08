@@ -129,17 +129,35 @@ def create_spotify_playlist(title: str) -> str:
 # Returns track URIs directly, so we never have to re-search
 # by "Artist - Title" string (which loses matches).
 # ----------------------------------------------------------
-def find_real_tracks(artists, genres, total_limit: int = 25):
-    print("Searching Spotify for real tracks...")
+def find_real_tracks(artists, genres, total_limit: int = 25, log=print):
+    log("Searching Spotify for real tracks...")
     sp = get_spotify()
     tracks = []
     seen = set()
+    premium_required = False
+    premium_notice_logged = False
 
     def collect(query, limit):
+        nonlocal premium_required, premium_notice_logged
         try:
             results = sp.search(q=query, type="track", limit=limit, market="US")
         except spotipy.SpotifyException as exc:
-            print(f"  (skipped '{query}': {exc.msg})")
+            if exc.http_status == 403:
+                premium_required = True
+                # Console keeps printing this for every failed query, as before.
+                print(
+                    "  Spotify returned a 403 error while searching. This usually means "
+                    "your account needs Spotify Premium to use search. Skipping this query."
+                )
+                # A caller-supplied log (e.g. the GUI) only needs to see it once.
+                if log is not print and not premium_notice_logged:
+                    premium_notice_logged = True
+                    log(
+                        "  Spotify returned a 403 error while searching. This usually means "
+                        "your account needs Spotify Premium to use search. Skipping this query."
+                    )
+            else:
+                log(f"  (skipped '{query}': {exc.msg})")
             return
         for item in results["tracks"]["items"]:
             uri = item["uri"]
@@ -166,8 +184,8 @@ def find_real_tracks(artists, genres, total_limit: int = 25):
         collect(genre, 20)
 
     tracks = tracks[:total_limit]
-    print(f"Found {len(tracks)} tracks.")
-    return tracks
+    log(f"Found {len(tracks)} tracks.")
+    return tracks, premium_required
 
 
 # ----------------------------------------------------------
@@ -222,7 +240,7 @@ def main():
         print("Gemini didn't return usable results. Try rephrasing your vibe.")
         return
 
-    tracks = find_real_tracks(artists, genres, total_limit=total_limit)
+    tracks, _ = find_real_tracks(artists, genres, total_limit=total_limit)
     if not tracks:
         print("No songs found for this vibe.")
         return
