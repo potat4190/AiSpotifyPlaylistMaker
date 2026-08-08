@@ -207,4 +207,10 @@ marimo/_lsp/
 __marimo__/
 
 
+# Project-specific
 .cache
+.spotify_token_cache
+.env
+
+# JetBrains
+.idea/
